@@ -1,7 +1,7 @@
 #lang setup/infotab
 
 (define blurb '("DeinProgramm - QuickCheck"))
-(define primary-file "quickcheck.rkt")
+(define primary-file "main.rkt")
 
 (define compile-omit-files
   '("examples.scm"
