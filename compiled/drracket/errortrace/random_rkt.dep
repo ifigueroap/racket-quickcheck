@@ -1,1 +1,0 @@
-("6.0" ("f41adabbed733ae41b3c3de72a80abc20064514a" . "9f7e0cdd6d413c66d528fca78845cd3f71a71a7b") (collects #"scheme" #"base.rkt") (collects #"scheme" #"include.rkt") (collects #"scheme" #"runtime-config.rkt") (collects #"srfi" #"9.rkt") (ext . #"/Users/ismael/Doctorado/Software/racket-quickcheck/random.scm"))
