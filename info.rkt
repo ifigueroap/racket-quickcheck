@@ -10,5 +10,5 @@
     "quickcheck.scm"
     "random.scm"))
 
-
+(define deps '("base"))
 
