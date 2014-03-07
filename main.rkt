@@ -1,4 +1,4 @@
-#lang scheme/base
+#lang racket/base
 
 (provide check check-results make-config
 	 quickcheck quickcheck-results
@@ -53,5 +53,5 @@
 (define (list-sort < lis)
   (sort lis <))
 
-(require scheme/include)
+(require racket/include)
 (include "quickcheck.scm")

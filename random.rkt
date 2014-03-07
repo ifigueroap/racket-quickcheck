@@ -1,4 +1,4 @@
-#lang scheme/base
+#lang racket/base
 
 (provide make-random-generator
 	 random-generator-next
@@ -13,5 +13,5 @@
     ((define-record-discloser ?:type ?discloser)
      (values))))
 
-(require scheme/include)
+(require racket/include)
 (include "random.scm")
