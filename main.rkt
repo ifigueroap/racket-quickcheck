@@ -1,4 +1,4 @@
-#lang scheme/base
+#lang racket/base
 
 (provide check check-results make-config
 	 quickcheck quickcheck-results
@@ -31,27 +31,9 @@
 	 collect
 	 )
 
-(require srfi/9
-	 racket/promise
+(require "quickcheck.rkt"
 	 "random.rkt")
 
 (provide exn:assertion-violation?
 	 exn:assertion-violation-who
 	 exn:assertion-violation-irritants)
-
-(define-struct (exn:assertion-violation exn:fail) (who irritants) #:transparent)
-
-; exceptions
-(define (assertion-violation who msg . irritants)
-  (raise (make-exn:assertion-violation msg (current-continuation-marks) who irritants)))
-
-; extended-ports
-(define make-string-output-port open-output-string)
-(define string-output-port-output get-output-string)
-
-; sorting
-(define (list-sort < lis)
-  (sort lis <))
-
-(require scheme/include)
-(include "quickcheck.scm")
