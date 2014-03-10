@@ -29,6 +29,7 @@
 	 classify
 	 trivial
 	 collect
+         testable?
 	 )
 
 (require "quickcheck.rkt"

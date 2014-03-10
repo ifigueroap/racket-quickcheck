@@ -443,6 +443,12 @@
 ; - a result record
 ; - a generator of a result record
 
+(define (testable? thing)
+  (or (property? thing)
+      (boolean? thing)
+      (result? thing)
+      (generator? thing)))
+
 (define (coerce->result-generator thing)
   (cond
    ((property? thing)
