@@ -567,7 +567,7 @@
     (cond
      ((= ntest (config-max-test config))
       (values ntest stamps #t))
-     ((= ntest (config-max-fail config))
+     ((= nfail (config-max-fail config))
       (values ntest stamps #f))
      (else
       (call-with-values
