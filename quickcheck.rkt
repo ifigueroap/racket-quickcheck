@@ -416,7 +416,6 @@
 ;; ok             : () = unknown, #t, #f
 ;; arguments-list : (list (list (pair (union #f symbol) value)))
 (define-struct result (ok stamp arguments-list))
-(define check-result? result?)
 
 (define (result-with-ok res ok)
   (make-result ok
@@ -456,7 +455,7 @@
 		   (property-arg-names thing)
 		   (property-args thing)))
    ((boolean? thing) (return (result-with-ok nothing thing)))
-   ((check-result? thing) (return thing))
+   ((result? thing) (return thing))
    ((generator? thing) thing)
    (else
     (assertion-violation 'coerce->result-generator 
