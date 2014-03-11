@@ -14,6 +14,7 @@
 ; need a pure random-number generator with a `split' operation.
 
 (provide make-random-generator
+         random-generator?
 	 random-generator-next
 	 random-generator-split
 	 random-integer

@@ -2,7 +2,12 @@
 
 (provide check check-results make-config
 	 quickcheck quickcheck-results
-	 check-result? result-arguments-list
+
+         (struct-out result)
+         (struct-out arbitrary)
+         (struct-out generator)
+         (struct-out config)
+
 	 choose-integer choose-real
 	 choose-ascii-char choose-ascii-letter choose-printable-ascii-char choose-char
 	 choose-list choose-vector choose-string choose-symbol
@@ -19,9 +24,6 @@
 	 arbitrary-ascii-string arbitrary-printable-ascii-string
 	 arbitrary-symbol
 	 arbitrary-procedure
-     arbitrary-generator
-     make-arbitrary
-     make-generator
 	 property
 	 property?
 	 ==>
@@ -29,6 +31,7 @@
 	 classify
 	 trivial
 	 collect
+         testable?
 	 )
 
 (require "quickcheck.rkt"

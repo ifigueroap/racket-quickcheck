@@ -416,7 +416,6 @@
 ;; ok             : () = unknown, #t, #f
 ;; arguments-list : (list (list (pair (union #f symbol) value)))
 (define-struct result (ok stamp arguments-list))
-(define check-result? result?)
 
 (define (result-with-ok res ok)
   (make-result ok
@@ -443,6 +442,12 @@
 ; - a result record
 ; - a generator of a result record
 
+(define (testable? thing)
+  (or (property? thing)
+      (boolean? thing)
+      (result? thing)
+      (generator? thing)))
+
 (define (coerce->result-generator thing)
   (cond
    ((property? thing)
@@ -450,7 +455,7 @@
 		   (property-arg-names thing)
 		   (property-args thing)))
    ((boolean? thing) (return (result-with-ok nothing thing)))
-   ((check-result? thing) (return thing))
+   ((result? thing) (return thing))
    ((generator? thing) thing)
    (else
     (assertion-violation 'coerce->result-generator 
@@ -567,7 +572,7 @@
     (cond
      ((= ntest (config-max-test config))
       (values ntest stamps #t))
-     ((= ntest (config-max-fail config))
+     ((= nfail (config-max-fail config))
       (values ntest stamps #f))
      (else
       (call-with-values
