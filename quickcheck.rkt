@@ -1,10 +1,28 @@
+#lang racket/base
+
 ; QuickCheck clone
 
-(define-record-type :generator
-  (make-generator proc)
-  generator?
-  ;; int(size) random-generator -> val
-  (proc generator-proc))
+(require racket/promise
+         "random.rkt")
+
+(provide (all-defined-out))
+
+(define-struct (exn:assertion-violation exn:fail) (who irritants) #:transparent)
+
+; exceptions
+(define (assertion-violation who msg . irritants)
+  (raise (make-exn:assertion-violation msg (current-continuation-marks) who irritants)))
+
+; extended-ports
+(define make-string-output-port open-output-string)
+(define string-output-port-output get-output-string)
+
+; sorting
+(define (list-sort < lis)
+  (sort lis <))
+
+;; proc : int(size) random-generator -> val
+(define-struct generator (proc))
 
 ; for transliteration from Haskell
 (define (return val)
@@ -177,13 +195,9 @@
 	(cdar lis)
 	(pick (- n k) lis))))
 
-(define-record-type :arbitrary
-  (make-arbitrary generator transformer)
-  arbitrary?
-  ;; (generator a)
-  (generator arbitrary-generator)
-  ;; a (generator b) -> (generator b)
-  (transformer arbitrary-transformer))
+;; generator   : (generator a)
+;; transformer : a (generator b) -> (generator b)
+(define-struct arbitrary (generator transformer))
 
 ; class Arbitrary a where
 ;    arbitrary   :: Gen a
@@ -388,13 +402,8 @@
 			      gen)))))))
 
 
-(define-record-type :property
-  (make-property proc arg-names args)
-  property?
-  (proc property-proc)
-  (arg-names property-arg-names)
-  ;; (list (union arbitrary generator))
-  (args property-args))
+;; args : (list (union arbitrary generator))
+(define-struct property (proc arg-names args) #:omit-define-syntaxes)
 
 (define-syntax property
   (syntax-rules ()
@@ -404,14 +413,9 @@
 		    '(?id ...)
 		    (list ?gen ...)))))
 
-(define-record-type :result
-  (make-result ok stamp arguments-list)
-  check-result?
-  ;; () = unknown, #t, #f
-  (ok result-ok)
-  (stamp result-stamp) 
-  ;; (list (list (pair (union #f symbol) value)))
-  (arguments-list result-arguments-list))
+;; ok             : () = unknown, #t, #f
+;; arguments-list : (list (list (pair (union #f symbol) value)))
+(define-struct result (ok stamp arguments-list))
 
 (define (result-with-ok res ok)
   (make-result ok
@@ -438,6 +442,12 @@
 ; - a result record
 ; - a generator of a result record
 
+(define (testable? thing)
+  (or (property? thing)
+      (boolean? thing)
+      (result? thing)
+      (generator? thing)))
+
 (define (coerce->result-generator thing)
   (cond
    ((property? thing)
@@ -445,7 +455,7 @@
 		   (property-arg-names thing)
 		   (property-args thing)))
    ((boolean? thing) (return (result-with-ok nothing thing)))
-   ((check-result? thing) (return thing))
+   ((result? thing) (return thing))
    ((generator? thing) thing)
    (else
     (assertion-violation 'coerce->result-generator 
@@ -510,13 +520,7 @@
 
 ; Running the whole shebang
 
-(define-record-type :config
-  (make-config max-test max-fail size print-every)
-  config?
-  (max-test config-max-test)
-  (max-fail config-max-fail)
-  (size config-size)
-  (print-every config-print-every))
+(define-struct config (max-test max-fail size print-every))
 
 (define quick
   (make-config 100
@@ -568,7 +572,7 @@
     (cond
      ((= ntest (config-max-test config))
       (values ntest stamps #t))
-     ((= ntest (config-max-fail config))
+     ((= nfail (config-max-fail config))
       (values ntest stamps #f))
      (else
       (call-with-values

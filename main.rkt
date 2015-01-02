@@ -1,8 +1,15 @@
-#lang scheme/base
+#lang racket/base
 
 (provide check check-results make-config
 	 quickcheck quickcheck-results report-result
 	 check-result? result-arguments-list
+	 quickcheck quickcheck-results
+
+     (struct-out result)
+     (struct-out arbitrary)
+     (struct-out generator)
+     (struct-out config)
+
 	 choose-integer choose-real
 	 choose-ascii-char choose-ascii-letter choose-printable-ascii-char choose-char
 	 choose-list choose-vector choose-string choose-symbol
@@ -19,9 +26,6 @@
 	 arbitrary-ascii-string arbitrary-printable-ascii-string
 	 arbitrary-symbol
 	 arbitrary-procedure
-     arbitrary-generator
-     make-arbitrary
-     make-generator
 	 property
 	 property?
 	 ==>
@@ -29,29 +33,12 @@
 	 classify
 	 trivial
 	 collect
+         testable?
 	 )
 
-(require srfi/9
-	 racket/promise
+(require "quickcheck.rkt"
 	 "random.rkt")
 
 (provide exn:assertion-violation?
 	 exn:assertion-violation-who
 	 exn:assertion-violation-irritants)
-
-(define-struct (exn:assertion-violation exn:fail) (who irritants) #:transparent)
-
-; exceptions
-(define (assertion-violation who msg . irritants)
-  (raise (make-exn:assertion-violation msg (current-continuation-marks) who irritants)))
-
-; extended-ports
-(define make-string-output-port open-output-string)
-(define string-output-port-output get-output-string)
-
-; sorting
-(define (list-sort < lis)
-  (sort lis <))
-
-(require scheme/include)
-(include "quickcheck.scm")
