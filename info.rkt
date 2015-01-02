@@ -2,6 +2,7 @@
 
 (define blurb '("DeinProgramm - QuickCheck"))
 (define primary-file "main.rkt")
+(define deps '("base" "scribble-lib"))
 
 (define compile-omit-files
   '("examples.scm"
