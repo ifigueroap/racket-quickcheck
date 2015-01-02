@@ -1,7 +1,7 @@
 #lang scheme/base
 
 (provide check check-results make-config
-	 quickcheck quickcheck-results
+	 quickcheck quickcheck-results report-result
 	 check-result? result-arguments-list
 	 choose-integer choose-real
 	 choose-ascii-char choose-ascii-letter choose-printable-ascii-char choose-char
