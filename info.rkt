@@ -2,7 +2,8 @@
 
 (define blurb '("DeinProgramm - QuickCheck"))
 (define primary-file "main.rkt")
-(define deps '("base" "scribble-lib"))
+(define deps '("base"))
+(define build-deps '("scribble-lib"))
 (define scribblings '(("scribblings/quickcheck.scrbl")))
 
 (define compile-omit-files
@@ -11,6 +12,3 @@
     "quickcheck-test.scm"
     "quickcheck.scm"
     "random.scm"))
-
-(define deps '("base"))
-
