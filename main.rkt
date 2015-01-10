@@ -2,13 +2,12 @@
 
 (provide check check-results make-config
 	 quickcheck quickcheck-results report-result
-	 check-result? result-arguments-list
 	 quickcheck quickcheck-results
 
-     (struct-out result)
-     (struct-out arbitrary)
-     (struct-out generator)
-     (struct-out config)
+         (struct-out result)
+         (struct-out arbitrary)
+         (struct-out generator)
+         (struct-out config)
 
 	 choose-integer choose-real
 	 choose-ascii-char choose-ascii-letter choose-printable-ascii-char choose-char
