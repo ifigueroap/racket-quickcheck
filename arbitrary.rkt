@@ -1,5 +1,13 @@
 #lang racket
 
+(provide (struct-out arbitrary)
+         coarbitrary
+         arbitrary-boolean arbitrary-integer arbitrary-natural arbitrary-ascii-char
+         arbitrary-ascii-letter arbitrary-printable-ascii-char arbitrary-char arbitrary-rational
+         arbitrary-real arbitrary-mixed arbitrary-one-of arbitrary-pair arbitrary-tuple
+         arbitrary-record arbitrary-sequence arbitrary-list arbitrary-vector arbitrary-ascii-string
+         arbitrary-printable-ascii-string arbitrary-string arbitrary-symbol arbitrary-procedure)
+
 (require (rename-in "generator.rkt"
                     [bind >>=])
          "private/error.rkt")

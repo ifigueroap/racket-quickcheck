@@ -1,6 +1,7 @@
 #lang racket
 
-(provide return (rename-out [>>= bind]) sequence
+(provide (struct-out generator)
+         return (rename-out [>>= bind]) sequence
          lift->generator
          variant generate promote sized
          choose-integer choose-real choose-ascii-char choose-ascii-letter choose-printable-ascii-char

@@ -2,8 +2,13 @@
 
 ; QuickCheck clone
 
-(require racket/promise
-         "random.rkt")
+(require "arbitrary.rkt"
+         (rename-in "generator.rkt"
+                    [bind >>=])
+         "random.rkt"
+         "property.rkt"
+         "private/error.rkt"
+         racket/promise)
 
 (provide (all-defined-out))
 
@@ -15,117 +20,6 @@
 (define (list-sort < lis)
   (sort lis <))
 
-
-;; args : (list (union arbitrary generator))
-(define-struct property (proc arg-names args) #:omit-define-syntaxes)
-
-(define-syntax property
-  (syntax-rules ()
-    ((property ((?id ?gen) ...) ?body0 ?body1 ...)
-     (make-property (lambda (?id ...)
-		      ?body0 ?body1 ...)
-		    '(?id ...)
-		    (list ?gen ...)))))
-
-;; ok             : () = unknown, #t, #f
-;; arguments-list : (list (list (pair (union #f symbol) value)))
-(define-struct result (ok stamp arguments-list))
-
-(define (result-with-ok res ok)
-  (make-result ok
-	       (result-stamp res)
-	       (result-arguments-list res)))
-
-(define (result-add-stamp res stamp)
-  (make-result (result-ok res)
-	       (cons stamp (result-stamp res))
-	       (result-arguments-list res)))
-
-; result (list (pair (union #f symbol) value)) -> result
-(define (result-add-arguments res args)
-  (make-result (result-ok res)
-	       (result-stamp res)
-	       (cons args (result-arguments-list res))))
-
-(define nothing
-  (make-result '() '() '()))
-
-; A testable value is one of the following:
-; - a :property object
-; - a boolean
-; - a result record
-; - a generator of a result record
-
-(define (testable? thing)
-  (or (property? thing)
-      (boolean? thing)
-      (result? thing)
-      (generator? thing)))
-
-(define (coerce->result-generator thing)
-  (cond
-   ((property? thing)
-    (for-all/names (property-proc thing)
-		   (property-arg-names thing)
-		   (property-args thing)))
-   ((boolean? thing) (return (result-with-ok nothing thing)))
-   ((result? thing) (return thing))
-   ((generator? thing) thing)
-   (else
-    (assertion-violation 'coerce->result-generator 
-			 "cannot be coerced to a result generator"
-			 thing))))
-
-(define (coerce->generator thing)
-  (cond
-   ((generator? thing) thing)
-   ((arbitrary? thing) (arbitrary-generator thing))
-   (else
-    (assertion-violation 'coerce->generator
-			 "cannot be coerced to a generator" thing))))
-
-(define (for-all proc . args)
-  (>>= (sequence (map coerce->generator args))
-       (lambda (args)
-	 (>>= (coerce->result-generator (apply proc args))
-	      (lambda (res)
-		(return (result-add-arguments res
-					      (map (lambda (arg) (cons #f arg)) args))))))))
-
-(define (for-all/names proc arg-names args)
-  (>>= (sequence (map coerce->generator args))
-       (lambda (args)
-	 (>>= (coerce->result-generator (apply proc args))
-	      (lambda (res)
-		(return (result-add-arguments res (map cons arg-names args))))))))
-
-(define-syntax ==>
-  (syntax-rules ()
-    ((==> ?bool ?prop)
-     (if ?bool
-	 ?prop
-	 (return nothing)))))
-
-(define (label str testable)
-  (>>= (coerce->result-generator testable)
-       (lambda (res)
-	 (return (result-add-stamp res str)))))
-
-(define-syntax classify
-  (syntax-rules ()
-    ((classify ?really? ?str ?testable)
-     (let ((testable ?testable))
-       (if ?really?
-	   (label ?str testable)
-	   testable)))))
-
-(define-syntax trivial
-  (syntax-rules ()
-    ((trivial ?really? ?testable)
-     (classify ?really? "trivial" ?testable))))
-
-(define (collect lbl testable)
-  (label (external-representation lbl) testable))
  
 (define (external-representation obj)
   (let ((port (make-string-output-port)))
