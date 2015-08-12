@@ -1,4 +1,4 @@
-#lang racket
+#lang racket/base
 
 (provide (struct-out arbitrary) ; from quickcheck/private/arbitrary
          coarbitrary            ; from quickcheck/private/arbitrary

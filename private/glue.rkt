@@ -1,4 +1,4 @@
-#lang racket
+#lang racket/base
 
 (provide coerce->result-generator
          coerce->generator

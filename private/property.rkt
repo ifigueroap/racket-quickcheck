@@ -1,4 +1,4 @@
-#lang racket
+#lang racket/base
 
 (provide (except-out (struct-out property) property)
          (rename-out [make-property property]))

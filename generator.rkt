@@ -1,4 +1,4 @@
-#lang racket
+#lang racket/base
 
 (provide (struct-out generator)
          return (rename-out [>>= bind]) sequence

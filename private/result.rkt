@@ -1,4 +1,4 @@
-#lang racket
+#lang racket/base
 
 (provide (struct-out result)
          result-with-ok result-add-stamp result-add-arguments nothing)
