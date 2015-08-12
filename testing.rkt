@@ -1,5 +1,9 @@
 #lang racket
 
+(provide testable?
+         (struct-out config)
+         quick verbose check-results check quickcheck-results quickcheck)
+
 (require (rename-in "generator.rkt" [bind >>=])
          "property.rkt"
          "result.rkt"

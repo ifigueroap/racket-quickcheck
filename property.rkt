@@ -2,8 +2,7 @@
 
 (provide property property?
          ==>
-         ;label classify trivial collect
-         )
+         label classify trivial collect)
 
 (require (rename-in "generator.rkt"
                     [bind >>=])
