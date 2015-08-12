@@ -1,7 +1,7 @@
 #lang racket
 
-(provide (struct-out arbitrary)
-         coarbitrary
+(provide (struct-out arbitrary) ; from quickcheck/private/arbitrary
+         coarbitrary            ; from quickcheck/private/arbitrary
          arbitrary-boolean arbitrary-integer arbitrary-natural arbitrary-ascii-char
          arbitrary-ascii-letter arbitrary-printable-ascii-char arbitrary-char arbitrary-rational
          arbitrary-real arbitrary-mixed arbitrary-one-of arbitrary-pair arbitrary-tuple
@@ -10,18 +10,8 @@
 
 (require (rename-in "generator.rkt"
                     [bind >>=])
+         "private/arbitrary.rkt"
          "private/error.rkt")
-
-;; generator   : (generator a)
-;; transformer : a (generator b) -> (generator b)
-(define-struct arbitrary (generator transformer))
-
-; class Arbitrary a where
-;    arbitrary   :: Gen a
-;    coarbitrary :: a -> Gen b -> Gen b
-
-(define (coarbitrary arb val gen)
-  ((arbitrary-transformer arb) val gen))
 
 (define arbitrary-boolean
   (make-arbitrary (choose-one-of '(#t #f))
