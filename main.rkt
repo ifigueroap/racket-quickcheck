@@ -1,7 +1,7 @@
 #lang racket/base
 
 (provide check check-results make-config
-	 quickcheck quickcheck-results report-result
+	 quickcheck quickcheck-results
 	 quickcheck quickcheck-results
 
          (struct-out result)
@@ -12,8 +12,10 @@
 	 choose-integer choose-real
 	 choose-ascii-char choose-ascii-letter choose-printable-ascii-char choose-char
 	 choose-list choose-vector choose-string choose-symbol
-	 generator-unit generator-bind generator-sequence
-	 sized choose-one-of choose-mixed choose-with-frequencies
+	 (rename-out [return generator-unit]
+                     [bind generator-bind]
+                     [sequence generator-sequence])
+         sized choose-one-of choose-mixed choose-with-frequencies
 	 arbitrary-boolean arbitrary-char arbitrary-ascii-char arbitrary-printable-ascii-char
 	 arbitrary-integer arbitrary-natural arbitrary-rational arbitrary-real
 	 arbitrary-mixed arbitrary-one-of
@@ -35,8 +37,13 @@
          testable?
 	 )
 
-(require "quickcheck.rkt"
-	 "random.rkt")
+(require "arbitrary.rkt"
+         "generator.rkt"
+         "property.rkt"
+         "result.rkt"
+         "testing.rkt"
+	 "private/random.rkt"
+         "private/error.rkt")
 
 (provide exn:assertion-violation?
 	 exn:assertion-violation-who
