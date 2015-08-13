@@ -9,7 +9,8 @@
          choose-with-frequencies)
 
 (require "private/generator.rkt"
-         "private/random.rkt")
+         "private/random.rkt"
+         racket/promise)
 
 ; int (generator a) -> (generator a)
 (define (variant v gen)

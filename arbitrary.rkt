@@ -11,7 +11,8 @@
 (require (rename-in "generator.rkt"
                     [bind >>=])
          "private/arbitrary.rkt"
-         "private/error.rkt")
+         "private/error.rkt"
+         racket/promise)
 
 (define arbitrary-boolean
   (make-arbitrary (choose-one-of '(#t #f))
