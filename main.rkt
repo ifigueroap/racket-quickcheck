@@ -1,50 +1,50 @@
 #lang racket/base
 
 (provide check check-results make-config
-	 quickcheck quickcheck-results
-	 quickcheck quickcheck-results
-
+         quickcheck quickcheck-results         
+         quickcheck/e
+         
          (struct-out result)
          (struct-out arbitrary)
          (struct-out generator)
          (struct-out config)
-
-	 choose-integer choose-real
-	 choose-ascii-char choose-ascii-letter choose-printable-ascii-char choose-char
-	 choose-list choose-vector choose-string choose-symbol
-	 (rename-out [return generator-unit]
+         
+         choose-integer choose-real
+         choose-ascii-char choose-ascii-letter choose-printable-ascii-char choose-char
+         choose-list choose-vector choose-string choose-symbol
+         (rename-out [return generator-unit]
                      [bind generator-bind]
                      [sequence generator-sequence])
          sized choose-one-of choose-mixed choose-with-frequencies
-	 arbitrary-boolean arbitrary-char arbitrary-ascii-char arbitrary-printable-ascii-char
-	 arbitrary-integer arbitrary-natural arbitrary-rational arbitrary-real
-	 arbitrary-mixed arbitrary-one-of
-	 arbitrary-pair
-	 arbitrary-list
-	 arbitrary-vector
-	 arbitrary-tuple arbitrary-record
-	 arbitrary-string
-	 arbitrary-ascii-string arbitrary-printable-ascii-string
-	 arbitrary-symbol
-	 arbitrary-procedure
-	 property
-	 property?
-	 ==>
-	 label
-	 classify
-	 trivial
-	 collect
+         arbitrary-boolean arbitrary-char arbitrary-ascii-char arbitrary-printable-ascii-char
+         arbitrary-integer arbitrary-natural arbitrary-rational arbitrary-real
+         arbitrary-mixed arbitrary-one-of
+         arbitrary-pair
+         arbitrary-list
+         arbitrary-vector
+         arbitrary-tuple arbitrary-record
+         arbitrary-string
+         arbitrary-ascii-string arbitrary-printable-ascii-string
+         arbitrary-symbol
+         arbitrary-procedure
+         property
+         property?
+         ==>
+         label
+         classify
+         trivial
+         collect
          testable?
-	 )
+         )
 
 (require "arbitrary.rkt"
          "generator.rkt"
          "property.rkt"
          "result.rkt"
          "testing.rkt"
-	 "private/random.rkt"
+         "private/random.rkt"
          "private/error.rkt")
 
 (provide exn:assertion-violation?
-	 exn:assertion-violation-who
-	 exn:assertion-violation-irritants)
+         exn:assertion-violation-who
+         exn:assertion-violation-irritants)
