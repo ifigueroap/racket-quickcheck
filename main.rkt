@@ -9,6 +9,11 @@
          (struct-out generator)
          (struct-out config)
          
+         with-test-count
+         with-small-test-count
+         with-medium-test-count
+         with-large-test-count
+         
          choose-integer choose-real
          choose-ascii-char choose-ascii-letter choose-printable-ascii-char choose-char
          choose-list choose-vector choose-string choose-symbol

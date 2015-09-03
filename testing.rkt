@@ -4,7 +4,11 @@
 
 (provide testable?
          (struct-out config)
-         quick verbose check-results check quickcheck-results quickcheck check/e quickcheck/e)
+         check-results check quickcheck-results quickcheck check/e quickcheck/e
+         with-test-count
+         with-small-test-count
+         with-medium-test-count
+         with-large-test-count)
 
 (require (rename-in "generator.rkt" [bind >>=])
          "property.rkt"
@@ -28,26 +32,45 @@
 
 (define-struct config (max-test max-fail size print-every))
 
-(define quick
-  (make-config 100
-               1000
-               (lambda (n)
-                 (+ 3 (quotient n 2)))
-               values))
+(define (default-test-size test-number)
+  (+ 3 (quotient test-number 2)))
 
-(define verbose
-  (make-config 100
-               1000
-               (lambda (n)
-                 (+ 3 (quotient n 2)))
-               (lambda (n args)
-                 (display n)
-                 (display ":")
-                 (newline)
-                 (for-each (lambda (arg)
-                             (display arg)
-                             (newline))
-                           args))))
+(define (verbose-test-print test-number test-args)
+  (printf "~a:\n" test-number)
+  (for-each displayln test-args))
+
+(define small-test-count 100)
+(define medium-test-count 1000)
+(define large-test-count 10000)
+
+(define current-test-count (make-parameter small-test-count))
+
+(define-syntax-rule (with-test-count test-count-expr body ...)
+  (parameterize ([current-test-count test-count-expr])
+    body ...))
+
+(define-syntax-rule (with-small-test-count body ...)
+  (with-test-count small-test-count body ...))
+
+(define-syntax-rule (with-medium-test-count body ...)
+  (with-test-count medium-test-count body ...))
+
+(define-syntax-rule (with-large-test-count body ...)
+  (with-test-count large-test-count body ...))
+
+(define (quick)
+  (define count (current-test-count))
+  (make-config count
+               (* count 10)
+               default-test-size
+               void))
+
+(define (verbose)
+  (define count (current-test-count))
+  (make-config count
+               (* count 10)
+               default-test-size
+               verbose-test-print))
 
 (define (check-results config prop)
   (let ((rgen (make-random-generator 0)))
@@ -66,13 +89,13 @@
    report-result/e))
 
 (define (quickcheck-results prop)
-  (check-results quick prop))
+  (check-results (quick) prop))
 
 (define (quickcheck prop)
-  (check quick prop))
+  (check (quick) prop))
 
 (define-check (quickcheck/e prop)  
-  (check/e quick prop))
+  (check/e (quick) prop))
 
 
 ; returns three values:

@@ -147,6 +147,54 @@ Testing the property reveals that it holds up:
   number. The @racket[print-every] field should be a function that
   takes the test number and the generated arguments and is called for
   its side effect.
+
+  The @racket[quickcheck] and @racket[quickcheck-results] functions use
+  a default config where the test count is @racket[100], the test size
+  for test @racket[n] is @racket[(+ 3 (quotient n 2))], the max fail
+  count is ten times the test count, and nothing is printed. The default
+  config can be adjusted to run different numbers of tests with
+  @racket[with-small-test-count], @racket[with-medium-test-count], and
+  @racket[with-large-test-count].
+}
+
+@defform[(with-small-test-count body ...)]{
+  Within @racket[body ...], the number of test cases used by the
+  @racket[quickcheck] functions is @racket[100].
+  @examples[#:eval qc-eval
+    (with-small-test-count
+      (quickcheck (property ((str arbitrary-string))
+                    (string=? str (list->string (string->list str))))))
+  ]
+}
+
+@defform[(with-medium-test-count body ...)]{
+  Within @racket[body ...], the number of test cases used by the
+  @racket[quickcheck] functions is @racket[1000].
+  @examples[#:eval qc-eval
+    (with-medium-test-count
+      (quickcheck (property ((str arbitrary-string))
+                    (string=? str (list->string (string->list str))))))
+  ]
+}
+
+@defform[(with-large-test-count body ...)]{
+  Within @racket[body ...], the number of test cases used by the
+  @racket[quickcheck] functions is @racket[10000].
+  @examples[#:eval qc-eval
+    (with-large-test-count
+      (quickcheck (property ((str arbitrary-string))
+                    (string=? str (list->string (string->list str))))))
+  ]
+}
+
+@defform[(with-test-count test-count-expr body ...)]{
+  Within @racket[body ...], the number of test cases used by teh
+  @racket[quickcheck] functions is @racket[test-count-expr].
+  @examples[#:eval qc-eval
+    (with-test-count 42
+      (quickcheck (property ((str arbitrary-string))
+                    (string=? str (list->string (string->list str))))))
+  ]
 }
 
 @defstruct[result ([ok (or/c null #t #f)]
