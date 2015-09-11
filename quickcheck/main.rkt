@@ -1,8 +1,7 @@
 #lang racket/base
 
-(provide check check-results make-config
-         quickcheck quickcheck-results         
-         quickcheck/e
+(provide quickcheck quickcheck-results make-config
+         quickcheck/config quickcheck/config-results
          
          (struct-out result)
          (struct-out arbitrary)

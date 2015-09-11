@@ -4,7 +4,9 @@
 
 (provide testable?
          (struct-out config)
-         check-results check quickcheck-results quickcheck check/e quickcheck/e
+         quick verbose quickcheck/config-results
+         quickcheck/config quickcheck-results quickcheck
+         done write-arguments         
          with-test-count
          with-small-test-count
          with-medium-test-count
@@ -72,31 +74,21 @@
                default-test-size
                verbose-test-print))
 
-(define (check-results config prop)
+(define (quickcheck/config-results config prop)
   (let ((rgen (make-random-generator 0)))
     (tests config (coerce->result-generator prop) rgen 0 0 '())))
 
-(define (check config prop)
+(define (quickcheck/config config prop)
   (call-with-values
    (lambda ()
-     (check-results config prop))
+     (quickcheck/config-results config prop))
    report-result))
 
-(define-check (check/e config prop)
-  (call-with-values   
-   (lambda ()
-     (check-results config prop))
-   report-result/e))
-
 (define (quickcheck-results prop)
-  (check-results (quick) prop))
+  (quickcheck/config-results (quick) prop))
 
 (define (quickcheck prop)
-  (check (quick) prop))
-
-(define-check (quickcheck/e prop)  
-  (check/e (quick) prop))
-
+  (quickcheck/config (quick) prop))
 
 ; returns three values:
 ; - ntest
