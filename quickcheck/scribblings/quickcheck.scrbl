@@ -3,11 +3,13 @@
 @(require scribble/eval
           (for-label racket/base
                      racket/contract
-                     quickcheck))
+                     quickcheck
+		     rackunit/quickcheck))
 
 @(define qc-eval (make-base-eval))
 @(qc-eval '(require racket/list
-                    quickcheck))
+                    quickcheck
+		    rackunit/quickcheck))
 
 @title{Quickcheck}
 
@@ -241,6 +243,68 @@ Testing the property reveals that it holds up:
     @item{instances of the @racket[property] structure type,}
     @item{or instances of the @racket[generator] structure type.}
   ]
+}
+
+@section{Integration with RackUnit}
+
+By default @racket[quickcheck] simply displays whether the property check
+results in success or, in case of failure, it prints the arguments that falsify
+the property along with some other metadata. This is not helpful for (semi-)
+automatic testing as it is done using RackUnit. Fortunately it is possible to
+combine the best of both worlds.
+
+@defmodule[rackunit/quickcheck]
+
+@defform[(check-property prop)]{ Like @racket[quickcheck] but a RackUnit
+exception is raised if the property fails. The exception is raised using
+@racket[fail-check] and it is augmented with additional data: the number of
+tests performed, the stamps, and the arguments that falsify the property.
+
+For example, let us check the previous @racket[string->number-returns-number]
+property:
+
+@interaction[#:eval qc-eval
+(check-property string->number-returns-number)
+]
+}
+
+@defform[(check-property/config config prop)]{
+Similar to @racket[check-property] but taking a specific @racket[config] object.
+}
+
+@defform[(add-property-check-info ((name value) ...))]{ Adds specific
+@racket[check-info] data when checking a property, using either
+@racket[check-property] or @racket[check-property/config]. Its usage is like
+@racket[with-check-info] but it does not define a new scope. Instead, it
+modifies an internal parameter that is cleared at every usage of
+@racket[check-property] or @racket[check-property/config].
+
+The purpose of this form is to improve error messages when a property
+fails. For instance, to compare whether two functions are observationally
+equivalent for arbitrary arguments, we can define the following form using
+@racket[add-property-check-info] to state the expected and actual values inside
+the declaration of a property:
+
+@racketblock+eval[#:eval qc-eval
+(define-syntax-rule (conforms-to f g ([name gen] ...))
+    (property ([name gen] ...)
+              (let ([expected (f name ...)]
+                    [actual (g name ...)])
+                (add-property-check-info (['expected expected]
+                                          ['actual actual]))
+                (equal? expected actual))))
+
+(define (f n) (+ n 1))
+(define (g n) (- n 1))
+]
+
+@interaction[#:eval qc-eval
+(check-property (conforms-to f g ([n arbitrary-integer])))
+]
+
+Crucially, every time the property is tested with a different set of arguments
+@racket[add-property-check-info] overrides the previous data.
+
 }
 
 @section{Generators}
