@@ -5,6 +5,6 @@
 
 (define raco-commands
   '(("quickcheck"
-     raco-quickcheck
+     quickcheck/raco-quickcheck
      "autogenerate property test cases"
      25)))
