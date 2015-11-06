@@ -1,4 +1,4 @@
-racket-quickcheck
+racket-quickcheck [![Build Status](https://travis-ci.org/ifigueroap/racket-quickcheck.svg)](https://travis-ci.org/ifigueroap/racket-quickcheck)
 =================
 
 Quickcheck Clone implemented in Racket.
@@ -10,5 +10,3 @@ The documentation is available here:
   http://ifigueroap.github.io/racket-quickcheck/
 
 Contributions are welcome! In particular, more examples for the documentation would help.
-
-
