@@ -15,12 +15,12 @@
          racket/promise)
 
 (define arbitrary-boolean
-  (make-arbitrary (choose-one-of '(#t #f))
+  (arbitrary (choose-one-of '(#t #f))
 		  (lambda (a gen)
 		    (variant (if a 0 1) gen))))
 
 (define arbitrary-integer
-  (make-arbitrary (sized
+  (arbitrary (sized
 		   (lambda (n)
 		     (choose-integer (- n) n)))
 		  (lambda (n gen)
@@ -30,29 +30,29 @@
 			     gen))))
 
 (define arbitrary-natural
-  (make-arbitrary (sized
+  (arbitrary (sized
 		   (lambda (n)
 		     (choose-integer 0 n)))
 		  (lambda (n gen)
 		    (variant n gen))))
 
 (define arbitrary-ascii-char
-  (make-arbitrary choose-ascii-char
+  (arbitrary choose-ascii-char
 		  (lambda (ch gen)
 		    (variant (char->integer ch) gen))))
 
 (define arbitrary-ascii-letter
-  (make-arbitrary choose-ascii-letter
+  (arbitrary choose-ascii-letter
 		  (lambda (ch gen)
 		    (variant (char->integer ch) gen))))
 
 (define arbitrary-printable-ascii-char
-  (make-arbitrary choose-printable-ascii-char
+  (arbitrary choose-printable-ascii-char
 		  (lambda (ch gen)
 		    (variant (char->integer ch) gen))))
 
 (define arbitrary-char
-  (make-arbitrary (sized
+  (arbitrary (sized
 		   (lambda (n)
 		     (choose-char (integer->char 0)
 				  (integer->char n))))
@@ -64,7 +64,7 @@
      (+ 1 b)))
 
 (define arbitrary-rational
-  (make-arbitrary (lift->generator make-rational
+  (arbitrary (lift->generator make-rational
 				   (arbitrary-generator arbitrary-integer)
 				   (arbitrary-generator arbitrary-natural))
 		  (lambda (r gen)
@@ -79,7 +79,7 @@
 			(+ (abs c) 1)))))
 
 (define arbitrary-real
-  (make-arbitrary (lift->generator fraction
+  (arbitrary (lift->generator fraction
 				   (arbitrary-generator arbitrary-integer)
 				   (arbitrary-generator arbitrary-integer)
 				   (arbitrary-generator arbitrary-integer))
@@ -92,7 +92,7 @@
 
 
 (define (arbitrary-mixed pred+arbitrary-promise-list)
-  (make-arbitrary (choose-mixed (map (lambda (p)
+  (arbitrary (choose-mixed (map (lambda (p)
 				       (delay (arbitrary-generator (force (cdr p)))))
 				     pred+arbitrary-promise-list))
 		  (lambda (val gen)
@@ -108,7 +108,7 @@
 			(loop (cdr lis) (+ 1 n))))))))
 
 (define (arbitrary-one-of eql? . vals)
-  (make-arbitrary (choose-one-of vals)
+  (arbitrary (choose-one-of vals)
 		  (lambda (val gen)
 		    (let loop ((lis vals) (n 0))
 		      (cond
@@ -122,7 +122,7 @@
 			(loop (cdr lis) (+ 1 n))))))))
 		       
 (define (arbitrary-pair arbitrary-car arbitrary-cdr)
-  (make-arbitrary (lift->generator cons
+  (arbitrary (lift->generator cons
 				   (arbitrary-generator arbitrary-car)
 				   (arbitrary-generator arbitrary-cdr))
 		  (lambda (p gen)
@@ -133,7 +133,7 @@
 
 ; a tuple is just a non-uniform list 
 (define (arbitrary-tuple . arbitrary-els)
-  (make-arbitrary (apply lift->generator
+  (arbitrary (apply lift->generator
 			 list
 			 (map arbitrary-generator arbitrary-els))
 		  (lambda (lis gen)
@@ -147,7 +147,7 @@
 				  (cdr lis))))))))
 
 (define (arbitrary-record construct accessors . arbitrary-els)
-  (make-arbitrary (apply lift->generator
+  (arbitrary (apply lift->generator
 			 construct
 			 (map arbitrary-generator arbitrary-els))
 		  (lambda (rec gen)
@@ -161,7 +161,7 @@
 				  (cdr lis))))))))
 
 (define (arbitrary-sequence choose-sequence sequence->list arbitrary-el)
-  (make-arbitrary (sized
+  (arbitrary (sized
 		   (lambda (n)
 		     (>>= (choose-integer 0 n)
 			  (lambda (length)
@@ -197,7 +197,7 @@
 
 (define (arbitrary-procedure arbitrary-result . arbitrary-args)
   (let ((arbitrary-arg-tuple (apply arbitrary-tuple arbitrary-args)))
-    (make-arbitrary (promote
+    (arbitrary (promote
 		     (lambda args
 		       ((arbitrary-transformer arbitrary-arg-tuple)
 			args

@@ -5,7 +5,7 @@
 
 ;; generator   : (generator a)
 ;; transformer : a (generator b) -> (generator b)
-(define-struct arbitrary (generator transformer))
+(struct arbitrary (generator transformer))
 
 ; class Arbitrary a where
 ;    arbitrary   :: Gen a

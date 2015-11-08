@@ -201,13 +201,13 @@ Testing the property reveals that it holds up:
 
 @defstruct[result ([ok (or/c null #t #f)]
                    [stamp (listof string?)]
-                   [argument-list (listof any/c)])]{
+                   [arguments-list (listof any/c)])]{
   Represents a single result from a test. The @racket[ok] field is
   @racket[#t] on success, @racket[#f] on failure, and @racket[null] if
   there is no test result.
 
   The @racket[stamp] field represents the labels that were relevant to
-  this test execution. The @racket[argument-list] is a list of the
+  this test execution. The @racket[arguments-list] is a list of the
   values generated for checking this test case.
 }
 
@@ -411,10 +411,14 @@ Crucially, every time the property is tested with a different set of arguments
   given an integer representing a value's size.
 }
 
-@defstruct[arbitrary ([gen generator?] [trans (-> any/c generator? generator?)])]{
-  Represents a source of randomly generated values, except where the values
-  are filtered by the function @racket[trans] to produce a narrower set of
-  new values.
+@defthing[arbitrary? predicate/c]{Recognizes @racket[arbitrary]s.}
+
+@defproc[(arbitrary [gen generator?]
+                    [trans (-> any/c generator? generator?)])
+         arbitrary?]{
+  Returns a source of randomly generated values, except where the values
+  are filtered by the function @racket[trans] to produce a narrower set
+  of new values.
 }
 
 @defthing[arbitrary-boolean arbitrary?]{
