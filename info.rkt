@@ -7,5 +7,6 @@
 (define deps '("base"
                "rackunit"))
 
-(define build-deps '("scribble-lib"
+(define build-deps '("doc-coverage"
+                     "scribble-lib"
                      "racket-doc"))

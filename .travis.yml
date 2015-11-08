@@ -22,3 +22,4 @@ install:
 
 script:
  - raco test $TRAVIS_BUILD_DIR
+ - raco quickcheck $TRAVIS_BUILD_DIR/quickcheck/private/test/main.rkt
