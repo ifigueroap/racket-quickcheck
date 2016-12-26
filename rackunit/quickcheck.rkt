@@ -4,7 +4,7 @@
 (require quickcheck)
 (require "../quickcheck/testing.rkt")
 
-(provide check-property check-property/config add-property-check-info)
+(provide check-property check-property/quiet check-property/config add-property-check-info)
 
 (define property-check-info (make-parameter (list)))
 
@@ -18,6 +18,12 @@
   (clear-property-check-info)
   (let-values ([(ntest stamps maybe-result) (quickcheck/config-results (quick) prop)])
     (report-result/e ntest stamps maybe-result)))
+
+(define-syntax check-property/quiet
+  (syntax-rules ()
+    ((check-property/quiet property)
+     (parameterize ([current-output-port (open-output-nowhere)])
+       (check-property property)))))
 
 (define-check (check-property/config config prop)
   (clear-property-check-info)

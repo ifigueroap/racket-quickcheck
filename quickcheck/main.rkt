@@ -1,10 +1,10 @@
 #lang racket/base
 
 (provide quickcheck quickcheck-results make-config
-         quickcheck/config quickcheck/config-results
          
          (struct-out result)
-         (struct-out arbitrary)
+         arbitrary?
+         arbitrary
          (struct-out generator)
          (struct-out config)
          
@@ -48,7 +48,3 @@
          "testing.rkt"
          "private/random.rkt"
          "private/error.rkt")
-
-(provide exn:assertion-violation?
-         exn:assertion-violation-who
-         exn:assertion-violation-irritants)
