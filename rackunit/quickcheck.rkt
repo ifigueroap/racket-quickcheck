@@ -1,5 +1,6 @@
 #lang racket/base
 
+(require (only-in racket/port open-output-nowhere))
 (require (only-in rackunit define-check with-check-info with-check-info* make-check-info make-check-name fail-check))
 (require quickcheck)
 (require "../quickcheck/testing.rkt")
