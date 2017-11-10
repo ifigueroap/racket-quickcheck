@@ -126,7 +126,7 @@ Testing the property reveals that it holds up:
 
 @defproc[(check-results [config config?] [prop testable?]) result?]{
   Like @racket[check], except it will return three result values instead of
-  printing the results. See the @racket[quickcheck] function for an explanation
+  printing the results. See the @racket[quickcheck-results] function for an explanation
   of the return values.
 }
 
