@@ -39,6 +39,7 @@
          trivial
          collect
          testable?
+         variant
          )
 
 (require "arbitrary.rkt"
