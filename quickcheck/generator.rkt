@@ -2,7 +2,7 @@
 
 (provide (struct-out generator)
          return (rename-out [>>= bind]) sequence
-         lift->generator
+         lift->generator bind-generators
          variant generate promote sized
          choose-integer choose-real choose-ascii-char choose-ascii-letter choose-printable-ascii-char
          choose-char choose-one-of choose-list choose-string choose-symbol choose-vector choose-mixed
@@ -10,7 +10,9 @@
 
 (require "private/generator.rkt"
          "private/random.rkt"
-         racket/promise)
+         racket/promise
+         (for-syntax racket/base
+                     syntax/parse))
 
 ; int (generator a) -> (generator a)
 (define (variant v gen)
@@ -146,3 +148,17 @@
     (if (<= n k)
 	(cdar lis)
 	(pick (- n k) lis))))
+
+(define-syntax (bind-generators stx)
+  (syntax-parse stx
+    [(_ ([id:id val-expr:expr]
+         [id-rest:id val-expr-rest:expr] ...)
+        body:expr)
+     (let ([recurse #'(bind-generators ([id-rest val-expr-rest] ...)
+                                       body)])
+       #`(let ([id val-expr])
+           (if (generator? id)
+               (>>= id (λ(id) #,recurse))
+               #,recurse)))]
+    [(_ () body:expr)
+     #'(return body)]))

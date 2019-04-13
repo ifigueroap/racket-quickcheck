@@ -19,6 +19,7 @@
          (rename-out [return generator-unit]
                      [bind generator-bind]
                      [sequence generator-sequence])
+         bind-generators
          sized choose-one-of choose-mixed choose-with-frequencies
          arbitrary-boolean arbitrary-char arbitrary-ascii-char arbitrary-printable-ascii-char
          arbitrary-integer arbitrary-natural arbitrary-rational arbitrary-real
