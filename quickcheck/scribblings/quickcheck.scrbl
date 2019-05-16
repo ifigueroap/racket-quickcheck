@@ -79,6 +79,42 @@ Testing the property reveals that it holds up:
   (quickcheck append-and-length-agree)
 ]
 
+@subsection{Creating new generators}
+Let's say we have this code representing a 2D point.
+@(interaction
+  #:eval qc-eval
+  (struct point (x y) #:transparent)
+  (define (distance p1 p2)
+    (let ([dx (- (point-x p1)
+                 (point-x p2))]
+          [dy (- (point-y p1)
+                 (point-x p2))])
+      (sqrt (+ (* dx dx)
+               (* dy dy))))))
+
+We want to create a generator that will produce points.
+We can use @(racket bind-generators) to do this:
+@(interaction
+  #:eval qc-eval
+  (define (choose-point [min-coord -9999] [max-coord 9999])
+    (bind-generators
+     ([x (choose-integer min-coord max-coord)]
+      [y (choose-integer min-coord max-coord)])
+     (point x y))))
+
+Now we can use that generator to check that the distance from point A to point B
+should always be the same as the distance from point B to point A:
+@(interaction
+  #:eval qc-eval
+  (quickcheck
+   (property ([p1 (choose-point)]
+              [p2 (choose-point)])
+     (= (distance p1 p2)
+        (distance p2 p1)))))
+
+Oops, there is a bug in the @(racket distance) function.
+If you fix it, all the checks should pass.
+
 @section{Running checks}
 
 @defproc[(quickcheck [prop testable?]) void?]{
@@ -393,6 +429,32 @@ Crucially, every time the property is tested with a different set of arguments
 
 @defproc[(generator-unit [val any/c]) generator?]{
   Produces a generator that always returns the given @racket[val].
+}
+
+@defform[(bind-generators ([id val-expr] ...) body)]{
+  Produces a generator based on the results of other generators.
+  Scoping of each @(racket id) behaves as it does in @(racket let*).
+
+  If @(racket val-expr) produces a @(racket generator?), the remaining code
+  is threaded through @(racket generator-bind), and @(racket id) will be bound
+  to the value produced by the generator.
+  Note that this delays evaluation until the generator is asked to produce a value.
+
+  @(racketblock
+    (struct foo (a b) #:transparent)
+    (code:comment "choose-foo creates a generator that produces a foo such that")
+    (code:comment "  foo-a is an integer?")
+    (code:comment "  foo-b is (or/c foo? #f)")
+    (define (choose-foo [recurse-limit 3])
+      (bind-generators
+       ([rand (choose-integer 0 1)]
+        [recurse? (and (positive? recurse-limit)
+                       (= 0 rand))]
+        [a (choose-integer 0 9)]
+        [b (if recurse?
+               (choose-foo (sub1 recurse-limit))
+               #f)])
+       (foo a b))))
 }
 
 @defproc[(generator-bind [gen generator?] [k (-> any/c generator?)])
