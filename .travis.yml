@@ -30,5 +30,6 @@ before_install:
 
 script:
  - cd ..
- - travis_retry raco pkg install --deps search-auto https://github.com/ausimian/racket-quickcheck.git
+ - travis_retry raco pkg install --deps search-auto --clone racket-quickcheck https://github.com/ausimian/racket-quickcheck.git
  - raco test -p racket-quickcheck
+ - raco quickcheck racket-quickcheck/quickcheck/private/test/main.rkt
