@@ -304,6 +304,10 @@ property:
 ]
 }
 
+@defform[(check-property/quiet prop)]{
+Similar to @racket[check-property] but doesn't produce output.
+}
+
 @defform[(check-property/config config prop)]{
 Similar to @racket[check-property] but taking a specific @racket[config] object.
 }
