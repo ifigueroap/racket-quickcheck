@@ -147,7 +147,7 @@
   (let ((k (caar lis)))
     (if (<= n k)
 	(cdar lis)
-	(pick (- n k) lis))))
+	(pick (- n k) (cdr lis)))))
 
 (define-syntax (bind-generators stx)
   (syntax-parse stx
