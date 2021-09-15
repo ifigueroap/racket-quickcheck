@@ -154,11 +154,10 @@
     [(_ ([id:id val-expr:expr]
          [id-rest:id val-expr-rest:expr] ...)
         body:expr)
-     (let ([recurse #'(bind-generators ([id-rest val-expr-rest] ...)
-                                       body)])
-       #`(let ([id val-expr])
-           (if (generator? id)
-               (>>= id (λ(id) #,recurse))
-               #,recurse)))]
+     #`(let* ([id val-expr]
+              [gen (if (generator? id) id (generator-unit id))])
+         (>>= gen (λ (id) (bind-generators
+                           ([id-rest val-expr-rest] ...)
+                           body))))]
     [(_ () body:expr)
      #'(return body)]))
