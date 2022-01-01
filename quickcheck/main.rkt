@@ -40,6 +40,12 @@
          trivial
          collect
          testable?
+         make-random-generator
+         random-generator?
+         random-generator-next
+         random-generator-split
+         random-integer
+         random-real
          )
 
 (require "arbitrary.rkt"
