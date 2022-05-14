@@ -308,6 +308,10 @@ property:
 Similar to @racket[check-property] but taking a specific @racket[config] object.
 }
 
+@defform[(check-property/quiet prop)]{
+Like @racket[check-property] but suppresses any output generated during the run.
+}
+
 @defform[(add-property-check-info ((name value) ...))]{ Adds specific
 @racket[check-info] data when checking a property, using either
 @racket[check-property] or @racket[check-property/config]. Its usage is like
