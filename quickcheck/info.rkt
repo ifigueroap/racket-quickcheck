@@ -10,4 +10,4 @@
      25)))
 
 (define test-omit-paths
-  '("scribblings"))
+  '("scribblings") () ("Testing"))
