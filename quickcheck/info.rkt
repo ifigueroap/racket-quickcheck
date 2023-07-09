@@ -1,7 +1,7 @@
 #lang info
 
 (define name "quickcheck")
-(define scribblings '(("scribblings/quickcheck.scrbl")))
+(define scribblings '(("scribblings/quickcheck.scrbl" () ("Testing"))))
 
 (define raco-commands
   '(("quickcheck"
@@ -10,4 +10,4 @@
      25)))
 
 (define test-omit-paths
-  '("scribblings") () ("Testing"))
+  '("scribblings"))
