@@ -149,16 +149,26 @@
 	(cdar lis)
 	(pick (- n k) (cdr lis)))))
 
-(define-syntax (bind-generators stx)
+(define-syntax (bind-generators-recurse stx)
   (syntax-parse stx
     [(_ ([id:id val-expr:expr]
          [id-rest:id val-expr-rest:expr] ...)
         body:expr)
-     (let ([recurse #'(bind-generators ([id-rest val-expr-rest] ...)
-                                       body)])
-       #`(let ([id val-expr])
-           (if (generator? id)
-               (>>= id (λ(id) #,recurse))
-               #,recurse)))]
+     #`(let* ([id val-expr]
+              [gen (if (generator? id) id (generator-unit id))])
+         (>>= gen (λ (id) (bind-generators-recurse
+                           ([id-rest val-expr-rest] ...)
+                           body))))]
     [(_ () body:expr)
      #'(return body)]))
+
+(define-syntax (bind-generators stx)
+  (syntax-parse stx
+    [(_ ([id:id val-expr:expr] ...)
+        body:expr)
+     #'(make-generator
+        (λ (size rgen)
+          ((generator-proc (bind-generators-recurse
+                            ([id val-expr] ...)
+                            body))
+           size rgen)))]))
