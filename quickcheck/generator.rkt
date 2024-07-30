@@ -155,7 +155,7 @@
          [id-rest:id val-expr-rest:expr] ...)
         body:expr)
      #`(let* ([id val-expr]
-              [gen (if (generator? id) id (generator-unit id))])
+              [gen (if (generator? id) id (return id))])
          (>>= gen (λ (id) (bind-generators-recurse
                            ([id-rest val-expr-rest] ...)
                            body))))]
